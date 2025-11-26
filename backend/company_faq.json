@@ -1,0 +1,35 @@
+{
+  "company": {
+    "name": "Razorpay",
+    "description": "India's leading payment gateway solution that enables businesses to accept, process and disburse payments.",
+    "founded": "2014",
+    "headquarters": "Bangalore, India"
+  },
+  "faqs": [
+    {
+      "question": "What does Razorpay do?",
+      "answer": "Razorpay provides a complete payment solution for businesses to accept online payments, automate payouts, and manage finances.  We support credit/debit cards, netbanking, UPI, and 100+ payment methods.",
+      "keywords": ["product", "what", "do", "payment", "solution"]
+    },
+    {
+      "question": "Who is this for?",
+      "answer": "Razorpay is designed for businesses of all sizes - from startups to large enterprises. We serve e-commerce, SaaS, education, logistics, and various other sectors.",
+      "keywords": ["who", "target", "audience", "for", "customers"]
+    },
+    {
+      "question": "Do you have a free tier?",
+      "answer": "Yes!  We offer a free account to get started. You only pay a small transaction fee (2% + GST) when you process payments.  No setup fees or annual maintenance charges.",
+      "keywords": ["free", "pricing", "cost", "fees", "charges"]
+    },
+    {
+      "question": "What are your pricing plans?",
+      "answer": "Our standard pricing is 2% + GST per transaction. For high-volume businesses, we offer custom enterprise pricing with lower rates. No hidden charges or setup fees.",
+      "keywords": ["pricing", "cost", "plans", "rates", "transaction"]
+    },
+    {
+      "question": "What payment methods do you support?",
+      "answer": "We support 100+ payment methods including credit/debit cards, netbanking, UPI, wallets, EMI, and international cards. We're constantly adding new payment options.",
+      "keywords": ["payment", "methods", "support", "cards", "upi"]
+    }
+  ]
+}

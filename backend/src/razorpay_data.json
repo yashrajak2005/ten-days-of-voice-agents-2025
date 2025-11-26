@@ -1,0 +1,54 @@
+{
+  "company_name": "Razorpay",
+  "description": "Razorpay is an Indian financial technology company that provides a full-stack financial solutions platform for businesses. It enables businesses to accept, process, and disburse payments via credit cards, debit cards, net banking, UPI, and wallets. Razorpay also offers neo-banking services (RazorpayX) and lending (Razorpay Capital).",
+  "mission": "To revolutionize money management for online businesses in India by offering simple, affordable, and secure ways to accept, process, and disburse payments.",
+  "products": [
+    "Payment Gateway: Accept payments via 100+ modes.",
+    "RazorpayX: Neo-banking platform for businesses.",
+    "Razorpay Capital: Lending and corporate credit cards.",
+    "Payment Links: Collect payments via shareable links.",
+    "Invoices: Create and send GST-compliant invoices."
+  ],
+  "faqs": [
+    {
+      "question": "What is Razorpay?",
+      "answer": "Razorpay is a global payments solution provider that allows businesses to accept, process, and disburse payments using its product suite. It offers a secure link between a business's website, various issuing institutions, acquiring banks, and other payment gateway providers."
+    },
+    {
+      "question": "Can I accept international payments?",
+      "answer": "Yes, Razorpay supports international payments via cards issued by overseas banks. You can display prices in over 90 foreign currencies, and payments are settled in Indian Rupees."
+    },
+    {
+      "question": "How do I get access to RazorpayX?",
+      "answer": "RazorpayX is often available through an Early Access program. You can sign up for early access on their website, or existing merchants may be notified via their dashboard."
+    },
+    {
+      "question": "How are payments settled?",
+      "answer": "Razorpay automatically settles captured payments to your bank account according to your settlement cycle. No manual action is required."
+    },
+    {
+      "question": "Is there a test mode?",
+      "answer": "Yes, Razorpay provides a test mode to generate API keys and simulate payments without real money deduction."
+    },
+    {
+      "question": "Is it secure?",
+      "answer": "Yes, Razorpay is highly secure. However, you should never share sensitive details like card numbers, CVV, OTP, or passwords with anyone."
+    }
+  ],
+  "pricing": {
+    "standard_plan": {
+      "platform_fee": "2% per transaction + GST",
+      "international_cards": "3% per transaction + GST",
+      "setup_fee": "None",
+      "maintenance_fee": "None",
+      "upi": "0.40% per transaction (capped at Rs. 10)",
+      "debit_cards": "1.75% (Domestic), 2.00% (International)",
+      "credit_cards": "1.75% (Domestic), 2.00% (International)",
+      "wallets": "2.00% per transaction"
+    },
+    "enterprise_plan": {
+      "description": "Customized plan for businesses with large transaction volumes.",
+      "benefits": "24x7 priority support, dedicated Key Account Manager, early access to features."
+    }
+  }
+}
