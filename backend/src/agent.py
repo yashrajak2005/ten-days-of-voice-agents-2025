@@ -23,135 +23,112 @@ from livekit.agents import (
 from livekit.plugins import murf, silero, google, deepgram, noise_cancellation
 from livekit.plugins.turn_detector.multilingual import MultilingualModel
 
-logger = logging.getLogger("sdr_agent")
+logger = logging.getLogger("fraud_agent")
 load_dotenv(".env.local")
 
-# Helper: find the content JSON file in common locations or via env var.
-def find_content_path() -> Optional[str]:
-    # 1) explicit env override
-    env_path = os.environ.get("RAZORPAY_CONTENT_PATH")
-    if env_path:
-        if os.path.isabs(env_path):
-            candidate = env_path
-        else:
-            candidate = os.path.join(os.getcwd(), env_path)
-        if os.path.exists(candidate):
-            return candidate
-        # try relative to project
-        alt = os.path.join(os.path.dirname(__file__), "..", env_path)
-        if os.path.exists(alt):
-            return os.path.abspath(alt)
-
-    # 2) common locations (project-root/shared-data, backend/, repo layout)
-    candidates = [
-        os.path.join(os.path.dirname(__file__), "razorpay_data.json"),
-        os.path.join(os.getcwd(), "backend", "src", "razorpay_data.json"),
-        os.path.join(os.getcwd(), "src", "razorpay_data.json"),
-    ]
-    for c in candidates:
-        if os.path.exists(c):
-            return os.path.abspath(c)
-
-    return None
-
-
-class CompanyInfo:
-    def __init__(self, filepath: Optional[str] = None):
+# --- Fraud Database Handling ---
+class FraudCaseDB:
+    def __init__(self, filepath: str):
         self.filepath = filepath
-        self.data: Dict = {}
-        if filepath:
-            self._load(filepath)
-        else:
-            logger.warning("No content file provided; loading empty data.")
+        self.cases: List[Dict] = []
+        self._load()
 
-    def _load(self, path: str):
+    def _load(self):
         try:
-            with open(path, "r", encoding="utf-8") as f:
-                self.data = json.load(f)
-            logger.info(f"Loaded company info from: {path}")
+            if os.path.exists(self.filepath):
+                with open(self.filepath, "r", encoding="utf-8") as f:
+                    self.cases = json.load(f)
+                logger.info(f"Loaded {len(self.cases)} fraud cases from {self.filepath}")
+            else:
+                logger.warning(f"Fraud DB file not found at {self.filepath}")
+                self.cases = []
         except Exception as e:
-            logger.error(f"Error loading content file at {path}: {e}")
+            logger.error(f"Error loading fraud DB at {self.filepath}: {e}")
+            self.cases = []
 
-    def get_faqs(self) -> List[Dict]:
-        return self.data.get("faqs", [])
+    def get_case_by_username(self, username: str) -> Optional[Dict]:
+        for case in self.cases:
+            if case["userName"].lower() == username.lower():
+                return case
+        return None
 
-    def get_pricing(self) -> Dict:
-        return self.data.get("pricing", {})
+    def update_case(self, username: str, status: str, note: str):
+        for case in self.cases:
+            if case["userName"].lower() == username.lower():
+                case["status"] = status
+                case["outcome_note"] = note
+                self._save()
+                return True
+        return False
 
-    def get_description(self) -> str:
-        return self.data.get("description", "")
+    def _save(self):
+        try:
+            with open(self.filepath, "w", encoding="utf-8") as f:
+                json.dump(self.cases, f, indent=2)
+            logger.info(f"Saved fraud DB to {self.filepath}")
+        except Exception as e:
+            logger.error(f"Error saving fraud DB: {e}")
 
-
-class SDRAgent(Agent):
-    def __init__(self, company_info: CompanyInfo):
-        self.company_info = company_info
-        self.lead_info: Dict = {}
+# --- Fraud Agent ---
+class FraudAgent(Agent):
+    def __init__(self, db: FraudCaseDB):
         super().__init__(
             instructions=(
-                "You are a Sales Development Representative (SDR) for Razorpay, a leading fintech company in India. "
-                "Your goal is to answer user questions about Razorpay politely and professionally, and then collect lead information. "
-                "You should greet the user warmly, ask what brought them here, and answer their questions using the provided tools. "
-                "Do NOT make up information. If you don't know, say you'll check with a specialist. "
-                "After answering their initial questions, naturally transition to asking for their details: Name, Company, Email, Role, Use Case, Team Size, and Timeline. "
-                "Don't ask for everything at once; make it conversational. "
-                "When the user indicates they are done (e.g., 'That's all', 'Thanks'), use the 'end_call_summary' tool to summarize and save the lead."
+                "You are a Fraud Detection Representative for Bank of America. "
+                "Your goal is to verify a suspicious transaction with the customer. "
+                "1. Introduce yourself and the reason for the call (suspicious transaction). "
+                "2. Ask for the customer's name to look up their file. "
+                "3. Once you have the name, verify their identity using their security question. "
+                "4. If verified, read out the transaction details (Merchant, Amount, Time, Location). "
+                "5. Ask if they authorized this transaction. "
+                "6. If YES: Mark as safe, thank them, and end call. "
+                "7. If NO: Mark as fraud, explain that the card is blocked and a new one is on the way, then end call. "
+                "8. If verification fails or user is unknown: Apologize and end call. "
+                "Be professional, calm, and reassuring. Do NOT ask for real card numbers or passwords."
             )
         )
+        self.db = db
+        self.current_case: Optional[Dict] = None
+        self.verified = False
 
     @function_tool
-    async def answer_question(self, context: RunContext, query: str):
-        """Search the FAQ and company info to answer a user's question about product, pricing, or company."""
-        query = query.lower()
-        faqs = self.company_info.get_faqs()
-        
-        # Simple keyword matching
-        best_match = None
-        max_score = 0
-        
-        for faq in faqs:
-            q_tokens = set(faq["question"].lower().split())
-            query_tokens = set(query.split())
-            overlap = len(q_tokens.intersection(query_tokens))
-            if overlap > max_score:
-                max_score = overlap
-                best_match = faq["answer"]
-
-        if "price" in query or "cost" in query or "fee" in query:
-             pricing = self.company_info.get_pricing()
-             return f"Here is our pricing structure: Standard plan is {pricing.get('standard_plan', {}).get('platform_fee', '2%')}. We also have an Enterprise plan for larger volumes."
-
-        if best_match and max_score > 0:
-            return best_match
-        
-        return "I'm not exactly sure about that specific detail. I can connect you with a product specialist for a deeper dive. Is there anything else I can help with regarding our general offerings?"
+    async def lookup_user(self, context: RunContext, name: str):
+        """Look up a customer by name to find their fraud case."""
+        case = self.db.get_case_by_username(name)
+        if case:
+            self.current_case = case
+            return f"I found a case for {name}. Please ask them the security question: {case['securityQuestion']}"
+        else:
+            return "I could not find a customer with that name."
 
     @function_tool
-    async def collect_lead_info(self, context: RunContext, field: str, value: str):
-        """Save a specific piece of lead information (Name, Company, Email, Role, Use Case, Team Size, Timeline)."""
-        self.lead_info[field] = value
-        logger.info(f"Collected lead info: {field} = {value}")
-        return f"Got it, saved {field}."
+    async def verify_security_answer(self, context: RunContext, answer: str):
+        """Check if the user's answer to the security question is correct."""
+        if not self.current_case:
+            return "No user loaded."
+        
+        expected = self.current_case["securityAnswer"].lower()
+        if answer.lower() == expected:
+            self.verified = True
+            c = self.current_case
+            details = f"Transaction at {c['transactionName']} for {c['transactionAmount']} on {c['transactionTime']} in {c['transactionLocation']}."
+            return f"Identity verified. Here are the transaction details: {details}. Ask if they authorized it."
+        else:
+            return "Security answer incorrect."
 
     @function_tool
-    async def end_call_summary(self, context: RunContext):
-        """Call this when the user says they are done to generate a summary and save the lead."""
-        summary_text = (
-            f"Thanks for chatting! Here's a quick summary: You are {self.lead_info.get('Name', 'a visitor')} "
-            f"from {self.lead_info.get('Company', 'a company')}, looking to use Razorpay for {self.lead_info.get('Use Case', 'payments')}. "
-            f"We'll be in touch shortly at {self.lead_info.get('Email', 'your email')}."
-        )
+    async def process_transaction_response(self, context: RunContext, authorized: bool):
+        """Process the user's confirmation or denial of the transaction."""
+        if not self.current_case or not self.verified:
+            return "Cannot process without verified user."
         
-        # Save to file
-        output_file = "lead_summary.json"
-        try:
-            with open(output_file, "w") as f:
-                json.dump(self.lead_info, f, indent=2)
-            logger.info(f"Saved lead summary to {output_file}")
-        except Exception as e:
-            logger.error(f"Failed to save lead summary: {e}")
-
-        return summary_text
-
+        username = self.current_case["userName"]
+        if authorized:
+            self.db.update_case(username, "confirmed_safe", "Customer confirmed transaction.")
+            return "Marked as safe. You can end the call."
+        else:
+            self.db.update_case(username, "confirmed_fraud", "Customer denied transaction. Card blocked.")
+            return "Marked as fraud. Inform user card is blocked and end call."
 
 # ----- Hooks used by the job process -----
 def prewarm(proc: JobProcess):
@@ -161,21 +138,20 @@ def prewarm(proc: JobProcess):
 async def entrypoint(ctx: JobContext):
     ctx.log_context_fields = {"room": ctx.room.name}
 
-    # Determine content path and load content
-    content_path = find_content_path()
-    if content_path:
-        logger.info(f"Using content file: {content_path}")
-        company_info = CompanyInfo(filepath=content_path)
-    else:
-        logger.error("Content file not found. Using empty company info.")
-        company_info = CompanyInfo(filepath=None)
+    # Initialize DB
+    # Look for fraud_db.json in the same directory or src
+    db_path = os.path.join(os.path.dirname(__file__), "fraud_db.json")
+    if not os.path.exists(db_path):
+         db_path = os.path.join(os.getcwd(), "src", "fraud_db.json")
+    
+    db = FraudCaseDB(db_path)
 
     # Build session
     session = AgentSession(
         stt=deepgram.STT(model="nova-3"),
         llm=google.LLM(model="gemini-2.5-flash"),
         tts=murf.TTS(
-            voice="en-US-matthew", # Keep Matthew as the default professional voice
+            voice="en-US-matthew", 
             style="Conversation",
             tokenizer=tokenize.basic.SentenceTokenizer(min_sentence_len=2),
             text_pacing=True,
@@ -199,7 +175,7 @@ async def entrypoint(ctx: JobContext):
     ctx.add_shutdown_callback(log_usage)
 
     # Instantiate agent
-    agent = SDRAgent(company_info=company_info)
+    agent = FraudAgent(db=db)
 
     await session.start(
         agent=agent,
