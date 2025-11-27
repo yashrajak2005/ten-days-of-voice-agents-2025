@@ -1,0 +1,30 @@
+[
+  {
+    "userName": "Yash",
+    "securityIdentifier": "98765",
+    "cardEnding": "1234",
+    "transactionName": "Amazon India",
+    "transactionAmount": "\u20b95,000.00",
+    "transactionTime": "10:30 AM",
+    "transactionLocation": "New Delhi, India",
+    "transactionSource": "amazon.in",
+    "securityQuestion": "What is the name of your first pet?",
+    "securityAnswer": "Bruno",
+    "status": "confirmed_fraud",
+    "outcome_note": "Customer denied transaction. Card blocked."
+  },
+  {
+    "userName": "Rahul",
+    "securityIdentifier": "11223",
+    "cardEnding": "9988",
+    "transactionName": "Swiggy",
+    "transactionAmount": "\u20b9450.00",
+    "transactionTime": "8:15 PM",
+    "transactionLocation": "Bangalore, India",
+    "transactionSource": "swiggy.com",
+    "securityQuestion": "What city were you born in?",
+    "securityAnswer": "Pune",
+    "status": "pending",
+    "outcome_note": ""
+  }
+]

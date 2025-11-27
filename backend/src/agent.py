@@ -74,9 +74,9 @@ class FraudAgent(Agent):
     def __init__(self, db: FraudCaseDB):
         super().__init__(
             instructions=(
-                "You are a Fraud Detection Representative for Bank of America. "
+                "You are a Fraud Detection Representative for Bank of India. "
                 "Your goal is to verify a suspicious transaction with the customer. "
-                "1. Introduce yourself and the reason for the call (suspicious transaction). "
+                "1. Start by saying 'Hello, this is a Fraud Detection Representative for Bank of India' and state the reason for the call (suspicious transaction). "
                 "2. Ask for the customer's name to look up their file. "
                 "3. Once you have the name, verify their identity using their security question. "
                 "4. If verified, read out the transaction details (Merchant, Amount, Time, Location). "
