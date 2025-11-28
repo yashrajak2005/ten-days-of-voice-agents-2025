@@ -1,0 +1,75 @@
+[
+  {
+    "timestamp": "2025-11-28T21:07:10.999277",
+    "items": [
+      {
+        "id": "g4",
+        "name": "Peanut Butter",
+        "price": 3.99,
+        "quantity": 1,
+        "notes": ""
+      }
+    ],
+    "total": 3.99,
+    "status": "placed",
+    "id": "order_20251128_210710"
+  },
+  {
+    "timestamp": "2025-11-28T21:08:36.261374",
+    "items": [
+      {
+        "id": "g2",
+        "name": "Organic Eggs (Dozen)",
+        "price": 5.99,
+        "quantity": 12,
+        "notes": ""
+      }
+    ],
+    "total": 71.88,
+    "status": "placed",
+    "id": "order_20251128_210836"
+  },
+  {
+    "timestamp": "2025-11-28T21:22:50.063284",
+    "items": [
+      {
+        "id": "g1",
+        "name": "Whole Wheat Bread",
+        "price": 3.5,
+        "quantity": 1,
+        "notes": ""
+      },
+      {
+        "id": "g2",
+        "name": "Organic Eggs (Dozen)",
+        "price": 5.99,
+        "quantity": 1,
+        "notes": ""
+      },
+      {
+        "id": "g3",
+        "name": "Almond Milk",
+        "price": 4.29,
+        "quantity": 1,
+        "notes": ""
+      },
+      {
+        "id": "g4",
+        "name": "Peanut Butter",
+        "price": 3.99,
+        "quantity": 1,
+        "notes": ""
+      },
+      {
+        "id": "s2",
+        "name": "Dark Chocolate Bar",
+        "price": 2.5,
+        "quantity": 1,
+        "notes": ""
+      }
+    ],
+    "total": 20.27,
+    "status": "placed",
+    "id": "order_20251128_212250"
+  }
+]

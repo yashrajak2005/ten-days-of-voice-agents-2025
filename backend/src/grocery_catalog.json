@@ -1,0 +1,142 @@
+[
+    {
+        "id": "g1",
+        "name": "Whole Wheat Bread",
+        "category": "Groceries",
+        "price": 3.50,
+        "tags": [
+            "vegan",
+            "bakery",
+            "healthy"
+        ]
+    },
+    {
+        "id": "g2",
+        "name": "Organic Eggs (Dozen)",
+        "category": "Groceries",
+        "price": 5.99,
+        "tags": [
+            "organic",
+            "dairy-free",
+            "protein"
+        ]
+    },
+    {
+        "id": "g3",
+        "name": "Almond Milk",
+        "category": "Groceries",
+        "price": 4.29,
+        "tags": [
+            "vegan",
+            "dairy-free",
+            "beverage"
+        ]
+    },
+    {
+        "id": "g4",
+        "name": "Peanut Butter",
+        "category": "Groceries",
+        "price": 3.99,
+        "tags": [
+            "vegan",
+            "protein",
+            "pantry"
+        ]
+    },
+    {
+        "id": "g5",
+        "name": "Strawberry Jam",
+        "category": "Groceries",
+        "price": 3.49,
+        "tags": [
+            "vegan",
+            "pantry",
+            "sweet"
+        ]
+    },
+    {
+        "id": "g6",
+        "name": "Spaghetti Pasta",
+        "category": "Groceries",
+        "price": 1.99,
+        "tags": [
+            "vegan",
+            "pantry",
+            "italian"
+        ]
+    },
+    {
+        "id": "g7",
+        "name": "Marinara Sauce",
+        "category": "Groceries",
+        "price": 2.99,
+        "tags": [
+            "vegan",
+            "pantry",
+            "italian"
+        ]
+    },
+    {
+        "id": "s1",
+        "name": "Potato Chips",
+        "category": "Snacks",
+        "price": 1.99,
+        "tags": [
+            "salty",
+            "party"
+        ]
+    },
+    {
+        "id": "s2",
+        "name": "Dark Chocolate Bar",
+        "category": "Snacks",
+        "price": 2.50,
+        "tags": [
+            "sweet",
+            "vegan"
+        ]
+    },
+    {
+        "id": "s3",
+        "name": "Granola Bar",
+        "category": "Snacks",
+        "price": 1.50,
+        "tags": [
+            "healthy",
+            "on-the-go"
+        ]
+    },
+    {
+        "id": "p1",
+        "name": "Margherita Pizza",
+        "category": "Prepared Food",
+        "price": 12.99,
+        "tags": [
+            "vegetarian",
+            "italian",
+            "frozen"
+        ]
+    },
+    {
+        "id": "p2",
+        "name": "Veggie Sandwich",
+        "category": "Prepared Food",
+        "price": 6.99,
+        "tags": [
+            "vegetarian",
+            "lunch",
+            "fresh"
+        ]
+    },
+    {
+        "id": "p3",
+        "name": "Caesar Salad",
+        "category": "Prepared Food",
+        "price": 8.99,
+        "tags": [
+            "fresh",
+            "lunch",
+            "healthy"
+        ]
+    }
+]

@@ -1,0 +1,21 @@
+{
+  "timestamp": "2025-11-28T20:53:47.220365",
+  "items": [
+    {
+      "id": "g2",
+      "name": "Organic Eggs (Dozen)",
+      "price": 5.99,
+      "quantity": 6,
+      "notes": ""
+    },
+    {
+      "id": "g3",
+      "name": "Almond Milk",
+      "price": 4.29,
+      "quantity": 1,
+      "notes": ""
+    }
+  ],
+  "total": 40.23,
+  "status": "placed"
+}

@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-11-28T20:42:54.780020",
+  "items": [
+    {
+      "id": "g4",
+      "name": "Peanut Butter",
+      "price": 3.99,
+      "quantity": 1,
+      "notes": ""
+    }
+  ],
+  "total": 3.99,
+  "status": "placed"
+}
