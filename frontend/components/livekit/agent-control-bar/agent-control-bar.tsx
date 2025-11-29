@@ -3,7 +3,7 @@
 import { type HTMLAttributes, useCallback, useState } from 'react';
 import { Track } from 'livekit-client';
 import { useChat, useRemoteParticipants } from '@livekit/components-react';
-import { ChatTextIcon, PhoneDisconnectIcon } from '@phosphor-icons/react/dist/ssr';
+import { ChatTextIcon, PhoneDisconnectIcon, ArrowCounterClockwise } from '@phosphor-icons/react/dist/ssr';
 import { useSession } from '@/components/app/session-provider';
 import { TrackToggle } from '@/components/livekit/agent-control-bar/track-toggle';
 import { Button } from '@/components/livekit/button';
@@ -20,6 +20,7 @@ export interface ControlBarControls {
   microphone?: boolean;
   screenShare?: boolean;
   chat?: boolean;
+  restart?: boolean;
 }
 
 export interface AgentControlBarProps extends UseInputControlsProps {
@@ -62,6 +63,10 @@ export function AgentControlBar({
     await send(message);
   };
 
+  const handleRestart = async () => {
+    await send('restart');
+  };
+
   const handleToggleTranscript = useCallback(
     (open: boolean) => {
       setChatOpen(open);
@@ -81,6 +86,7 @@ export function AgentControlBar({
     screenShare: controls?.screenShare ?? publishPermissions.screenShare,
     camera: controls?.camera ?? publishPermissions.camera,
     chat: controls?.chat ?? publishPermissions.data,
+    restart: controls?.restart ?? true,
   };
 
   const isAgentAvailable = participants.some((p) => p.isAgent);
@@ -158,6 +164,19 @@ export function AgentControlBar({
           >
             <ChatTextIcon weight="bold" />
           </Toggle>
+
+          {/* Restart Button */}
+          {visibleControls.restart && (
+            <Button
+              size="icon"
+              variant="secondary"
+              aria-label="Restart story"
+              onClick={handleRestart}
+              disabled={!isAgentAvailable}
+            >
+              <ArrowCounterClockwise weight="bold" />
+            </Button>
+          )}
         </div>
 
         {/* Disconnect */}
